@@ -77,17 +77,16 @@ function EmailList({ onEmailSelect }) {
   };
 
   return (
-    <div className="card">
-      <div style={{ width:'50vw' ,display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-        <h2>📥 Bandeja de Entrada</h2>
-        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-          <label style={{ fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+    <div className="bg-white rounded-lg p-6 shadow-sm mb-4">
+      <div className="w-full flex justify-between items-center mb-4">
+        <h2 className="text-xl font-medium">📥 Bandeja de Entrada</h2>
+        <div className="flex gap-2 items-center">
+          <label className="text-sm flex items-center gap-1">
             Mostrar:
             <select 
               value={limit} 
               onChange={(e) => setLimit(parseInt(e.target.value))}
-              className="form-control"
-              style={{ width: 'auto', padding: '0.5rem' }}
+              className="w-auto px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
             >
               <option value="20">20</option>
               <option value="50">50</option>
@@ -99,59 +98,71 @@ function EmailList({ onEmailSelect }) {
           <select 
             value={protocol} 
             onChange={(e) => setProtocol(e.target.value)}
-            className="form-control"
-            style={{ width: 'auto' }}
+            className="w-auto px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
           >
             <option value="imap">IMAP</option>
             <option value="pop3">POP3</option>
           </select>
-          <button onClick={fetchEmails} className="btn btn-primary" disabled={loading}>
+          <button 
+            onClick={fetchEmails} 
+            className="px-6 py-2 bg-blue-700 text-white rounded font-medium hover:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2 transition-all"
+            disabled={loading}
+          >
             {loading ? '⏳ Cargando...' : '🔄 Actualizar'}
           </button>
         </div>
       </div>
 
       {message && (
-        <div className={`alert alert-${message.type}`}>
+        <div className={`px-4 py-3 rounded mb-4 ${
+          message.type === 'success' ? 'bg-green-100 text-green-800 border border-green-200' :
+          message.type === 'error' ? 'bg-red-100 text-red-800 border border-red-200' :
+          'bg-blue-100 text-blue-800 border border-blue-200'
+        }`}>
           {message.text}
         </div>
       )}
 
       {loading ? (
-        <div className="loading">
+        <div className="text-center py-8 text-gray-500">
           <div className="spinner"></div>
-          <p>Cargando correos...</p>
+          <p className="mt-4">Cargando correos...</p>
         </div>
       ) : (
-        <div className="email-list">
+        <div className="flex flex-col gap-2">
           {emails.length === 0 ? (
-            <p style={{ textAlign: 'center', color: '#666', padding: '2rem' }}>
+            <p className="text-center text-gray-500 py-8">
               No hay correos para mostrar
             </p>
           ) : (
             emails.map((email) => (
               <div
                 key={email.id}
-                className={`email-item ${selectedId === email.id ? 'selected' : ''}`}
+                className={`p-4 bg-white rounded border-l-4 cursor-pointer transition-all ${
+                  selectedId === email.id 
+                    ? 'bg-blue-50 border-l-blue-600' 
+                    : 'border-l-transparent hover:bg-gray-50 hover:border-l-blue-600'
+                }`}
                 onClick={() => handleEmailClick(email)}
               >
-                <div className="email-header">
+                <div className="flex justify-between items-start mb-2">
                   <div>
-                    <div className="email-from">{email.from}</div>
-                    <div className="email-subject">{email.subject}</div>
+                    <div className="font-semibold text-gray-800">{email.from}</div>
+                    <div className="font-medium text-blue-600">{email.subject}</div>
                   </div>
-                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'start' }}>
-                    <div className="email-date">{formatDate(email.date)}</div>
+                  <div className="flex gap-2 items-start">
+                    <div className="text-sm text-gray-500">{formatDate(email.date)}</div>
                     <button
                       onClick={(e) => handleDelete(email.id, e)}
-                      className="btn btn-danger"
-                      style={{ padding: '0.25rem 0.5rem', fontSize: '0.75rem' }}
+                      className="px-2 py-1 bg-red-600 text-white rounded text-xs font-medium hover:bg-red-700 transition-all"
                     >
                       🗑️
                     </button>
                   </div>
                 </div>
-                <div className="email-preview">{getPreview(email)}</div>
+                <div className="text-sm text-gray-500 overflow-hidden text-ellipsis whitespace-nowrap">
+                  {getPreview(email)}
+                </div>
               </div>
             ))
           )}

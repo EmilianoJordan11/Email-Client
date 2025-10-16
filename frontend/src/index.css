@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Estilos personalizados adicionales si son necesarios */
+@layer components {
+  .spinner {
+    @apply border-4 border-gray-200 border-t-blue-600 rounded-full w-10 h-10 animate-spin mx-auto;
+  }
+}

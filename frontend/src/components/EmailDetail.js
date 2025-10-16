@@ -13,8 +13,8 @@ function EmailDetail({ email, protocol, onClose, onEmailSent }) {
 
   if (!email) {
     return (
-      <div className="card">
-        <p style={{ textAlign: 'center', color: '#666', padding: '2rem' }}>
+      <div className="bg-white rounded-lg p-6 shadow-sm">
+        <p className="text-center text-gray-500 py-8">
           Selecciona un correo para ver los detalles
         </p>
       </div>
@@ -101,41 +101,45 @@ function EmailDetail({ email, protocol, onClose, onEmailSent }) {
   };
 
   return (
-    <div className="email-detail">
+    <div className="bg-white rounded-lg p-8 shadow-sm">
       {message && (
-        <div className={`alert alert-${message.type}`}>
+        <div className={`px-4 py-3 rounded mb-4 ${
+          message.type === 'success' ? 'bg-green-100 text-green-800 border border-green-200' :
+          message.type === 'error' ? 'bg-red-100 text-red-800 border border-red-200' :
+          'bg-blue-100 text-blue-800 border border-blue-200'
+        }`}>
           {message.text}
         </div>
       )}
 
-      <div className="email-detail-header">
-        <h2 className="email-detail-subject">{email.subject}</h2>
+      <div className="border-b border-gray-300 pb-4 mb-4">
+        <h2 className="text-2xl font-medium mb-4">{email.subject}</h2>
         
-        <div className="email-meta">
-          <div><strong>De:</strong> {email.from}</div>
-          <div><strong>Para:</strong> {email.to}</div>
-          {email.cc && <div><strong>CC:</strong> {email.cc}</div>}
-          <div><strong>Fecha:</strong> {formatDate(email.date)}</div>
+        <div className="flex flex-col gap-2 text-sm text-gray-500">
+          <div><strong className="text-gray-800">De:</strong> {email.from}</div>
+          <div><strong className="text-gray-800">Para:</strong> {email.to}</div>
+          {email.cc && <div><strong className="text-gray-800">CC:</strong> {email.cc}</div>}
+          <div><strong className="text-gray-800">Fecha:</strong> {formatDate(email.date)}</div>
           {email.attachments && email.attachments.length > 0 && (
             <div>
-              <strong>Adjuntos:</strong> {email.attachments.map(att => att.filename).join(', ')}
+              <strong className="text-gray-800">Adjuntos:</strong> {email.attachments.map(att => att.filename).join(', ')}
             </div>
           )}
         </div>
 
-        <div className="email-actions">
+        <div className="flex gap-2 mt-4 pt-4 border-t border-gray-300">
           <button 
             onClick={() => {
               setShowReply(!showReply);
               setShowForward(false);
             }}
-            className="btn btn-primary"
+            className="px-6 py-2 bg-blue-700 text-white rounded font-medium hover:bg-blue-800 transition-all inline-flex items-center gap-2"
           >
             ↩️ Responder
           </button>
           <button 
             onClick={() => handleReply(true)}
-            className="btn btn-primary"
+            className="px-6 py-2 bg-blue-700 text-white rounded font-medium hover:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all inline-flex items-center gap-2"
             disabled={!showReply || loading}
           >
             ↩️↩️ Responder a todos
@@ -145,13 +149,13 @@ function EmailDetail({ email, protocol, onClose, onEmailSent }) {
               setShowForward(!showForward);
               setShowReply(false);
             }}
-            className="btn btn-secondary"
+            className="px-6 py-2 bg-gray-600 text-white rounded font-medium hover:bg-gray-700 transition-all inline-flex items-center gap-2"
           >
             ➡️ Reenviar
           </button>
           <button 
             onClick={handleDelete}
-            className="btn btn-danger"
+            className="px-6 py-2 bg-red-600 text-white rounded font-medium hover:bg-red-700 transition-all inline-flex items-center gap-2"
           >
             🗑️ Eliminar
           </button>
@@ -159,19 +163,19 @@ function EmailDetail({ email, protocol, onClose, onEmailSent }) {
       </div>
 
       {showReply && (
-        <div className="card" style={{ marginTop: '1rem', backgroundColor: '#f9f9f9' }}>
-          <h3 style={{ marginBottom: '1rem' }}>Responder</h3>
+        <div className="mt-4 bg-gray-50 rounded-lg p-6">
+          <h3 className="mb-4 text-lg font-medium">Responder</h3>
           <textarea
-            className="form-control"
+            className="w-full px-3 py-3 border border-gray-300 rounded resize-y min-h-[100px] focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
             value={replyText}
             onChange={(e) => setReplyText(e.target.value)}
             placeholder="Escribe tu respuesta..."
             rows="5"
           />
-          <div style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem' }}>
+          <div className="mt-4 flex gap-2">
             <button 
               onClick={() => handleReply(false)}
-              className="btn btn-primary"
+              className="px-6 py-2 bg-blue-700 text-white rounded font-medium hover:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               disabled={loading}
             >
               {loading ? 'Enviando...' : 'Enviar Respuesta'}
@@ -181,7 +185,7 @@ function EmailDetail({ email, protocol, onClose, onEmailSent }) {
                 setShowReply(false);
                 setReplyText('');
               }}
-              className="btn btn-secondary"
+              className="px-6 py-2 bg-gray-600 text-white rounded font-medium hover:bg-gray-700 transition-all"
             >
               Cancelar
             </button>
@@ -190,32 +194,32 @@ function EmailDetail({ email, protocol, onClose, onEmailSent }) {
       )}
 
       {showForward && (
-        <div className="card" style={{ marginTop: '1rem', backgroundColor: '#f9f9f9' }}>
-          <h3 style={{ marginBottom: '1rem' }}>Reenviar a</h3>
-          <div className="form-group">
-            <label>Destinatario:</label>
+        <div className="mt-4 bg-gray-50 rounded-lg p-6">
+          <h3 className="mb-4 text-lg font-medium">Reenviar a</h3>
+          <div className="mb-4">
+            <label className="block mb-2 text-gray-800 font-medium">Destinatario:</label>
             <input
               type="email"
-              className="form-control"
+              className="w-full px-3 py-3 border border-gray-300 rounded focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
               value={forwardTo}
               onChange={(e) => setForwardTo(e.target.value)}
               placeholder="destinatario@ejemplo.com"
             />
           </div>
-          <div className="form-group">
-            <label>Mensaje adicional (opcional):</label>
+          <div className="mb-4">
+            <label className="block mb-2 text-gray-800 font-medium">Mensaje adicional (opcional):</label>
             <textarea
-              className="form-control"
+              className="w-full px-3 py-3 border border-gray-300 rounded resize-y min-h-[100px] focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
               value={forwardMessage}
               onChange={(e) => setForwardMessage(e.target.value)}
               placeholder="Mensaje adicional..."
               rows="3"
             />
           </div>
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <div className="flex gap-2">
             <button 
               onClick={handleForward}
-              className="btn btn-primary"
+              className="px-6 py-2 bg-blue-700 text-white rounded font-medium hover:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               disabled={loading}
             >
               {loading ? 'Reenviando...' : 'Reenviar'}
@@ -226,7 +230,7 @@ function EmailDetail({ email, protocol, onClose, onEmailSent }) {
                 setForwardTo('');
                 setForwardMessage('');
               }}
-              className="btn btn-secondary"
+              className="px-6 py-2 bg-gray-600 text-white rounded font-medium hover:bg-gray-700 transition-all"
             >
               Cancelar
             </button>
@@ -234,12 +238,12 @@ function EmailDetail({ email, protocol, onClose, onEmailSent }) {
         </div>
       )}
 
-      <div className="email-body">
-        <h3 style={{ marginBottom: '1rem' }}>Mensaje:</h3>
+      <div className="py-4 leading-relaxed text-gray-800">
+        <h3 className="mb-4 text-lg font-medium">Mensaje:</h3>
         {email.html ? (
           <div dangerouslySetInnerHTML={{ __html: email.html }} />
         ) : (
-          <pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit' }}>
+          <pre className="whitespace-pre-wrap font-sans">
             {email.text}
           </pre>
         )}
